@@ -1,0 +1,103 @@
+# Advanced Code Scanner Configuration
+
+patterns:
+  global:
+    critical:
+      - - 'password\s*=\s*["\'][^"\']{3,}'
+        - 'Hardcoded password found'
+      - - 'api[_-]?key\s*=\s*["\'][^"\']{10,}'
+        - 'Hardcoded API key found'
+      - - 'secret\s*=\s*["\'][^"\']{5,}'
+        - 'Hardcoded secret found'
+      - - 'token\s*=\s*["\'][^"\']{10,}'
+        - 'Hardcoded token found'
+      - - 'private[_-]?key\s*=\s*["\'][^"\']{20,}'
+        - 'Hardcoded private key found'
+    
+    high:
+      - - 'eval\s*\('
+        - 'Use of eval() - potential code injection'
+      - - 'exec\s*\('
+        - 'Use of exec() - potential code injection'
+      - - 'system\s*\('
+        - 'Use of system() - potential command injection'
+      - - 'unsafe\s+redirect'
+        - 'Potential open redirect vulnerability'
+    
+    medium:
+      - - 'catch\s*\(\s*\w*\s*\)\s*\{\s*\}'
+        - 'Empty catch block - errors silently ignored'
+      - - 'except\s*:\s*pass'
+        - 'Empty except block - errors silently ignored'
+      - - 'ignore\s+errors'
+        - 'Error suppression - potential security issues'
+    
+    low:
+      - - 'TODO\s*:.*'
+        - 'Unresolved TODO comment'
+      - - 'FIXME\s*:.*'
+        - 'Unresolved FIXME comment'
+
+  per_language:
+    .py:
+      critical:
+        - - 'pickle\.loads?\('
+          - 'Unsafe deserialization - potential RCE'
+        - - 'yaml\.load\s*\('
+          - 'Unsafe YAML loading - potential RCE'
+      high:
+        - - 'input\s*\('
+          - 'User input without validation'
+    
+    .js:
+      critical:
+        - - 'document\.write'
+          - 'Potential XSS vulnerability'
+        - - 'innerHTML\s*='
+          - 'Potential XSS vulnerability'
+      high:
+        - - 'setTimeout\s*\([^,]+,\s*\w+\s*\)'
+          - 'Potential XSS vulnerability'
+    
+    .go:
+      critical:
+        - - 'var\s+\w+\s*=\s*&\w+{}'
+          - 'Uninitialized struct with nil pointers'
+      high:
+        - - 'fmt\.Print'
+          - 'Potential information disclosure'
+
+exclusions:
+  - '.git'
+  - 'node_modules'
+  - '__pycache__'
+  - '.venv'
+  - 'venv'
+  - 'build'
+  - 'dist'
+  - '.idea'
+  - '.vscode'
+  - '.pytest_cache'
+  - 'target'
+  - '.gradle'
+
+llm:
+  enabled: true
+  model_type: 'local'
+  model_name: 'qwen2.5-coder:7b'
+  base_url: 'http://localhost:11434'
+  cache_enabled: true
+  cache_ttl: 3600
+  max_tokens: 500
+  temperature: 0.3
+  timeout: 60
+
+scanning:
+  parallel: true
+  max_workers: null  # Use CPU count
+  use_threading: false
+  chunk_size: 50
+  timeout_per_file: 30
+  severity_threshold: 'medium'
+  sarif_output: true
+  github_actions: false
