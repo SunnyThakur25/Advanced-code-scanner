@@ -1,0 +1,33 @@
+# Core Requirements
+python>=3.8
+PyYAML>=6.0
+requests>=2.28.0
+tqdm>=4.65.0  # For progress bars 
+
+# AST Parsing Requirements (language-specific)
+astunparse>=1.6.3  # For Python AST
+esprima>=4.0.1  # For JavaScript AST parsing 
+lxml>=4.9.0  # For XML/HTML parsing 
+
+# Configuration File Support
+configparser>=5.3.0  # For INI files
+toml>=0.10.2  # For TOML config files 
+
+# LLM Integration
+openai>=0.27.0  # For OpenAI API 
+
+# SARIF Output
+jschema-to-python>=1.2.3  # For SARIF validation 
+
+# Parallel Processing
+concurrent-log-handler>=0.9.20  # For better logging in parallel mode
+
+# Development/Testing (optional)
+pytest>=7.2.0
+pytest-cov>=4.0.0
+mypy>=1.0.0
+flake8>=6.0.0
+black>=23.1.0
+
+# Optional Extras
+# pip install -e .[dev,llm,ast]
